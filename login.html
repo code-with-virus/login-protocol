@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Portal</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .role-toggle {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .role-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      background: #e0e0e0;
+      color: #000;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .role-toggle button.active {
+      background: #007bff;
+      color: white;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .note {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2 id="login-title">Student Login</h2>
+    <div class="role-toggle">
+      <button onclick="setRole('student')" id="student-btn" class="active">Student</button>
+      <button onclick="setRole('teacher')" id="teacher-btn">Teacher</button>
+    </div>
+
+    <!-- Student Login -->
+    <div id="student-login">
+      <button id="google-login">Login with Google</button>
+    </div>
+
+    <!-- Teacher Login -->
+    <form id="teacher-login" style="display: none;">
+      <input type="email" id="teacher-email" placeholder="Teacher Email" required />
+      <input type="password" id="teacher-password" placeholder="Password" required />
+      <button type="submit">Login as Teacher</button>
+    </form>
+
+    <p class="note">You will be redirected after login.</p>
+  </div>
+
+  <script>
+    // 🔥 Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAe4ENapp8UMoWlaV-z19hKvoivyPlOvhQ",
+      authDomain: "student-info-8cfd2.firebaseapp.com",
+      projectId: "student-info-8cfd2",
+      storageBucket: "student-info-8cfd2.firebasestorage.app",
+      messagingSenderId: "256930464254",
+      appId: "1:256930464254:web:6201fedfd7e810ee3180af",
+      measurementId: "G-LRYDNTQ0NR"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Role toggle logic
+    const studentBtn = document.getElementById('student-btn');
+    const teacherBtn = document.getElementById('teacher-btn');
+    const studentLogin = document.getElementById('student-login');
+    const teacherLogin = document.getElementById('teacher-login');
+    const title = document.getElementById('login-title');
+
+    function setRole(role) {
+      if (role === 'student') {
+        title.innerText = 'Student Login';
+        studentBtn.classList.add('active');
+        teacherBtn.classList.remove('active');
+        studentLogin.style.display = 'block';
+        teacherLogin.style.display = 'none';
+      } else {
+        title.innerText = 'Teacher Login';
+        teacherBtn.classList.add('active');
+        studentBtn.classList.remove('active');
+        studentLogin.style.display = 'none';
+        teacherLogin.style.display = 'block';
+      }
+    }
+
+    // Google login for students
+    document.getElementById('google-login').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      // Add additional scopes
+      provider.addScope('profile');
+      provider.addScope('email');
+      
+      auth.signInWithPopup(provider)
+        .then(result => {
+          console.log('Sign in successful:', result.user);
+          alert(`Welcome, ${result.user.displayName}`);
+          // Redirect logic here
+          window.location.href = "student-dashboard.html";
+        })
+        .catch(error => {
+          console.error('Sign in error:', error.code, error.message);
+          alert(`Sign-In Failed: ${error.message}`);
+        });
+    });
+
+    // Hardcoded login for teachers
+    document.getElementById('teacher-login').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('teacher-email').value;
+      const password = document.getElementById('teacher-password').value;
+
+      const validEmail = "mgm@gmail.com";
+      const validPassword = "mgm123";
+
+      if (email === validEmail && password === validPassword) {
+        alert("Welcome, Teacher!");
+        window.location.href = "teacher-dashboard.html";
+      } else {
+        alert("Invalid teacher credentials");
+      }
+    });
+  </script>
+</body>
+</html>
