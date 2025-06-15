@@ -13,7 +13,8 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -21,7 +22,7 @@
     }
 
     .login-container {
-      background: white;
+      background: rgba(255, 255, 255, 0.9);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
@@ -106,7 +107,7 @@
   </div>
 
   <script>
-    // 🔥 Your Firebase Config
+    // 🔥 Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAe4ENapp8UMoWlaV-z19hKvoivyPlOvhQ",
       authDomain: "student-info-8cfd2.firebaseapp.com",
@@ -147,7 +148,6 @@
     // Google login for students
     document.getElementById('google-login').addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
-      // Add additional scopes
       provider.addScope('profile');
       provider.addScope('email');
       
@@ -155,7 +155,6 @@
         .then(result => {
           console.log('Sign in successful:', result.user);
           alert(`Welcome, ${result.user.displayName}`);
-          // Redirect logic here
           window.location.href = "student-dashboard.html";
         })
         .catch(error => {
