@@ -98,6 +98,7 @@
     <div class="role-toggle">
       <button onclick="setRole('student')" id="student-btn" class="active">Student</button>
       <button onclick="setRole('teacher')" id="teacher-btn">Teacher</button>
+      <button onclick="setRole('admin')" id="admin-btn">Admin</button>
     </div>
 
     <!-- Student Login -->
@@ -110,6 +111,13 @@
       <input type="email" id="teacher-email" placeholder="Teacher Email" required />
       <input type="password" id="teacher-password" placeholder="Password" required />
       <button type="submit">Login as Teacher</button>
+    </form>
+
+    <!-- Admin Login -->
+    <form id="admin-login" style="display: none;">
+      <input type="email" id="admin-email" placeholder="Admin Email" required />
+      <input type="password" id="admin-password" placeholder="Password" required />
+      <button type="submit">Login as Admin</button>
     </form>
 
     <p class="note">You will be redirected after login.</p>
@@ -130,28 +138,39 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Role elements
     const studentBtn = document.getElementById('student-btn');
     const teacherBtn = document.getElementById('teacher-btn');
+    const adminBtn = document.getElementById('admin-btn');
     const studentLogin = document.getElementById('student-login');
     const teacherLogin = document.getElementById('teacher-login');
+    const adminLogin = document.getElementById('admin-login');
     const title = document.getElementById('login-title');
 
     function setRole(role) {
+      title.innerText = role.charAt(0).toUpperCase() + role.slice(1) + ' Login';
+
+      studentBtn.classList.remove('active');
+      teacherBtn.classList.remove('active');
+      adminBtn.classList.remove('active');
+
+      studentLogin.style.display = 'none';
+      teacherLogin.style.display = 'none';
+      adminLogin.style.display = 'none';
+
       if (role === 'student') {
-        title.innerText = 'Student Login';
         studentBtn.classList.add('active');
-        teacherBtn.classList.remove('active');
         studentLogin.style.display = 'block';
-        teacherLogin.style.display = 'none';
-      } else {
-        title.innerText = 'Teacher Login';
+      } else if (role === 'teacher') {
         teacherBtn.classList.add('active');
-        studentBtn.classList.remove('active');
-        studentLogin.style.display = 'none';
         teacherLogin.style.display = 'block';
+      } else if (role === 'admin') {
+        adminBtn.classList.add('active');
+        adminLogin.style.display = 'block';
       }
     }
 
+    // Google Student Login
     document.getElementById('google-login').addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
@@ -168,6 +187,7 @@
         });
     });
 
+    // Teacher Login
     document.getElementById('teacher-login').addEventListener('submit', function(e) {
       e.preventDefault();
       const email = document.getElementById('teacher-email').value;
@@ -181,6 +201,23 @@
         window.location.href = "teacher-dashboard.html";
       } else {
         alert("Invalid teacher credentials");
+      }
+    });
+
+    // Admin Login
+    document.getElementById('admin-login').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('admin-email').value;
+      const password = document.getElementById('admin-password').value;
+
+      const validAdminEmail = "admin@gmail.com";
+      const validAdminPassword = "admin123";
+
+      if (email === validAdminEmail && password === validAdminPassword) {
+        alert("Welcome, Admin!");
+        window.location.href = "admin-dashboard.html";
+      } else {
+        alert("Invalid admin credentials");
       }
     });
   </script>
