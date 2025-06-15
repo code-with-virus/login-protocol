@@ -22,22 +22,25 @@
     }
 
     .login-container {
-      background: rgba(255, 255, 255, 0.9);
+      background: linear-gradient(to bottom right, #ffffffdd, #f0f4f8cc);
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      width: 320px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      width: 330px;
       text-align: center;
+      backdrop-filter: blur(8px);
     }
 
     h2 {
       margin-bottom: 20px;
+      font-weight: 700;
     }
 
     .role-toggle {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
+      gap: 8px;
     }
 
     .role-toggle button {
@@ -48,7 +51,8 @@
       background: #e0e0e0;
       color: #000;
       font-weight: bold;
-      transition: 0.3s;
+      border-radius: 6px;
+      transition: all 0.3s ease;
     }
 
     .role-toggle button.active {
@@ -75,6 +79,11 @@
       font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056cc;
     }
 
     .note {
@@ -107,22 +116,20 @@
   </div>
 
   <script>
-    // 🔥 Firebase Config
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAe4ENapp8UMoWlaV-z19hKvoivyPlOvhQ",
       authDomain: "student-info-8cfd2.firebaseapp.com",
       projectId: "student-info-8cfd2",
-      storageBucket: "student-info-8cfd2.firebasestorage.app",
+      storageBucket: "student-info-8cfd2.appspot.com",
       messagingSenderId: "256930464254",
       appId: "1:256930464254:web:6201fedfd7e810ee3180af",
       measurementId: "G-LRYDNTQ0NR"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Role toggle logic
     const studentBtn = document.getElementById('student-btn');
     const teacherBtn = document.getElementById('teacher-btn');
     const studentLogin = document.getElementById('student-login');
@@ -145,25 +152,22 @@
       }
     }
 
-    // Google login for students
     document.getElementById('google-login').addEventListener('click', () => {
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');
-      
+
       auth.signInWithPopup(provider)
         .then(result => {
-          console.log('Sign in successful:', result.user);
           alert(`Welcome, ${result.user.displayName}`);
           window.location.href = "student-dashboard.html";
         })
         .catch(error => {
-          console.error('Sign in error:', error.code, error.message);
+          console.error('Sign in error:', error.message);
           alert(`Sign-In Failed: ${error.message}`);
         });
     });
 
-    // Hardcoded login for teachers
     document.getElementById('teacher-login').addEventListener('submit', function(e) {
       e.preventDefault();
       const email = document.getElementById('teacher-email').value;
